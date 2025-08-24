@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="reservations">
     <h2>Reservations</h2>
-    <table>
+    <table class="res-table">
       <thead>
         <tr>
           <th>Code</th>
@@ -27,7 +27,7 @@
           <td><input type="checkbox" v-model="r.returned" /></td>
           <td><input type="checkbox" v-model="r.paid" /></td>
           <td><input type="number" v-model.number="r.lateHours" min="0" /></td>
-          <td><button @click="save(r)">Update</button></td>
+          <td><button @click="save(r)">Save</button></td>
         </tr>
       </tbody>
     </table>
@@ -45,8 +45,6 @@ async function load() {
   reservations.value = data;
 }
 
-onMounted(load);
-
 async function save(r) {
   await updateReservation(r.trackingCode, {
     received: r.received,
@@ -56,4 +54,25 @@ async function save(r) {
   });
   load();
 }
+
+onMounted(load);
 </script>
+
+<style scoped>
+.reservations {
+  padding: 2rem;
+}
+.res-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.res-table th,
+.res-table td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  text-align: left;
+}
+.res-table input[type="number"] {
+  width: 60px;
+}
+</style>

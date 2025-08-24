@@ -1,15 +1,16 @@
 <template>
-  <div>
-    <h2>Products</h2>
-    <form @submit.prevent="create">
-      <input v-model="form.name" placeholder="Name" />
-      <input v-model.number="form.price" type="number" placeholder="Price" />
-      <input v-model.number="form.quantity" type="number" placeholder="Quantity" />
-      <input v-model="form.category" placeholder="Category" />
+  <div class="products">
+    <h2>Product Management</h2>
+    <form class="product-form" @submit.prevent="create">
+      <input v-model="form.name" placeholder="Name" required />
+      <input v-model.number="form.price" type="number" placeholder="Price" required />
+      <input v-model.number="form.quantity" type="number" placeholder="Quantity" required />
+      <input v-model="form.category" placeholder="Category" required />
       <input v-model="form.imageUrl" placeholder="Image URL" />
       <button type="submit">Add</button>
     </form>
-    <table>
+
+    <table class="product-table">
       <thead>
         <tr>
           <th>ID</th>
@@ -28,7 +29,7 @@
           <td><input type="number" v-model.number="p.quantity" /></td>
           <td>{{ p.category }}</td>
           <td>
-            <button @click="save(p)">Update</button>
+            <button @click="save(p)">Save</button>
             <button @click="remove(p.productId)">Delete</button>
           </td>
         </tr>
@@ -67,3 +68,32 @@ async function remove(id) {
   load();
 }
 </script>
+
+<style scoped>
+.products {
+  padding: 2rem;
+}
+.product-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.product-form input {
+  flex: 1 1 150px;
+  padding: 0.25rem;
+}
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.product-table th,
+.product-table td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  text-align: left;
+}
+.product-table input {
+  width: 80px;
+}
+</style>
