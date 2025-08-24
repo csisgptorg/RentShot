@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="pending-users">
     <h2>Pending Users</h2>
-    <table>
+    <table class="user-table">
       <thead>
         <tr>
           <th>Name</th>
@@ -46,3 +46,22 @@ async function reject(id) {
 
 onMounted(load);
 </script>
+
+<style scoped>
+.pending-users {
+  padding: 2rem;
+}
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.user-table th,
+.user-table td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  text-align: left;
+}
+.user-table button {
+  margin-right: 0.5rem;
+}
+</style>
