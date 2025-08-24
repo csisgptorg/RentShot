@@ -1,24 +1,11 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const Reservation = require('../models/Reservation');
 const Product = require('../models/Product');
+const { requireUser } = require('../middleware/auth');
 
 const router = express.Router();
 
-function auth(req, res, next) {
-  const header = req.headers.authorization || '';
-  const token = header.split(' ')[1];
-  if (!token) return res.status(401).json({ error: 'No token' });
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET || 'secret');
-    req.userId = payload.id;
-    next();
-  } catch (err) {
-    res.status(401).json({ error: 'Invalid token' });
-  }
-}
-
-router.post('/', auth, async (req, res) => {
+router.post('/', requireUser, async (req, res) => {
   try {
     const { items, startDate, endDate } = req.body;
     const ids = items.map(i => i.productId);
@@ -53,7 +40,7 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-router.get('/me', auth, async (req, res) => {
+router.get('/me', requireUser, async (req, res) => {
   const reservations = await Reservation.find({ user: req.userId });
   res.json(reservations);
 });
