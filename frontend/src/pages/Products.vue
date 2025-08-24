@@ -67,4 +67,3 @@ async function remove(id) {
   load();
 }
 </script>
-

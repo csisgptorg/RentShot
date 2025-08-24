@@ -16,4 +16,3 @@ onMounted(async () => {
   total.value = data.total;
 });
 </script>
-

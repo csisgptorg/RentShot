@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Admin = require('../models/Admin');
+const { randomCode } = require('../utils/generateCode');
 
 const router = express.Router();
 
@@ -17,6 +18,7 @@ router.post('/register', async (req, res) => {
       nationalId,
       phone,
       referrerCode,
+      myCode: randomCode(),
       passwordHash,
       status: 'pending'
     });
