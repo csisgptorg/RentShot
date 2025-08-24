@@ -84,6 +84,7 @@ async function submit() {
       const { data } = await login(identifier.value, password.value);
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', 'user');
+      localStorage.setItem('user', JSON.stringify(data.user));
       router.push('/reserve');
     } else {
       const { data } = await loginAdmin(username.value, password.value);
