@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <h2>Approved Users</h2>
-    <table>
+  <div class="approved-users">
+    <h2>Registered Users</h2>
+    <table class="user-table">
       <thead>
         <tr>
           <th>Name</th>
@@ -15,7 +15,9 @@
           <td>{{ u.firstName }} {{ u.lastName }}</td>
           <td>{{ u.phone }}</td>
           <td>{{ u.myCode }}</td>
-          <td><button @click="remove(u._id)">Delete</button></td>
+          <td>
+            <button @click="remove(u._id)">Delete</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -33,10 +35,26 @@ async function load() {
   users.value = data;
 }
 
-onMounted(load);
-
 async function remove(id) {
   await deleteUser(id);
   load();
 }
+
+onMounted(load);
 </script>
+
+<style scoped>
+.approved-users {
+  padding: 2rem;
+}
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.user-table th,
+.user-table td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  text-align: left;
+}
+</style>

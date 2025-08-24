@@ -1,22 +1,68 @@
 <template>
-  <div>
-    <h1>Login</h1>
-    <div>
-      <button @click="mode = 'user'">User</button>
-      <button @click="mode = 'admin'">Admin</button>
+  <div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="w-full max-w-sm bg-white rounded shadow p-6">
+      <div class="flex mb-6">
+        <button
+          :class="[
+            'flex-1 py-2 text-sm font-medium',
+            mode === 'user'
+              ? 'border-b-2 border-indigo-500 text-indigo-600'
+              : 'text-gray-500'
+          ]"
+          @click="mode = 'user'"
+        >
+          User
+        </button>
+        <button
+          :class="[
+            'flex-1 py-2 text-sm font-medium',
+            mode === 'admin'
+              ? 'border-b-2 border-indigo-500 text-indigo-600'
+              : 'text-gray-500'
+          ]"
+          @click="mode = 'admin'"
+        >
+          Admin
+        </button>
+      </div>
+      <form @submit.prevent="submit" class="space-y-4">
+        <div v-if="mode === 'user'" class="space-y-4">
+          <input
+            v-model="identifier"
+            type="text"
+            placeholder="National ID or My Code"
+            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-indigo-500"
+          />
+          <input
+            v-model="password"
+            type="password"
+            placeholder="Password"
+            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-indigo-500"
+          />
+        </div>
+        <div v-else class="space-y-4">
+          <input
+            v-model="username"
+            type="text"
+            placeholder="Username"
+            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-indigo-500"
+          />
+          <input
+            v-model="password"
+            type="password"
+            placeholder="Password"
+            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-indigo-500"
+          />
+        </div>
+        <button
+          type="submit"
+          class="w-full py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+        >
+          Login
+        </button>
+      </form>
+      <p v-if="error" class="text-red-500 text-sm mt-4">{{ error }}</p>
     </div>
-    <form @submit.prevent="submit">
-      <div v-if="mode === 'user'">
-        <input v-model="identifier" placeholder="National ID or My Code" />
-        <input type="password" v-model="password" placeholder="Password" />
-      </div>
-      <div v-else>
-        <input v-model="username" placeholder="Username" />
-        <input type="password" v-model="password" placeholder="Password" />
-      </div>
-      <button type="submit">Login</button>
-    </form>
-    <p v-if="error">{{ error }}</p>
   </div>
 </template>
 
@@ -38,6 +84,7 @@ async function submit() {
       const { data } = await login(identifier.value, password.value);
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', 'user');
+      localStorage.setItem('user', JSON.stringify(data.user));
       router.push('/reserve');
     } else {
       const { data } = await loginAdmin(username.value, password.value);

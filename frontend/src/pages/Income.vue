@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="income">
     <h2>Income</h2>
-    <p>Total: {{ total }}</p>
+    <div class="total">Total: {{ total }}</div>
   </div>
 </template>
 
@@ -16,3 +16,13 @@ onMounted(async () => {
   total.value = data.total;
 });
 </script>
+
+<style scoped>
+.income {
+  padding: 2rem;
+}
+.total {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+}
+</style>

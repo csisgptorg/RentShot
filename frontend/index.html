@@ -3,8 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <title>RentShot</title>
+    <link rel="stylesheet" href="/src/assets/main.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Vazirmatn', 'sans-serif']
+            }
+          }
+        }
+      }
+    </script>
   </head>
-  <body>
+  <body class="font-sans">
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
   </body>
