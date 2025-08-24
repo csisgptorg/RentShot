@@ -1,37 +1,59 @@
 <template>
   <div>
     <h1>Reserve</h1>
-    <div v-for="(group, cat) in grouped" :key="cat">
-      <h2>{{ cat }}</h2>
-      <div v-for="p in group" :key="p.productId">
-        {{ p.name }} - {{ p.price }} - موجودی {{ p.quantity }}
-        <input type="number" v-model.number="counts[p.productId]" min="1" :max="p.quantity" />
+    <div class="category-filter">
+      <button :class="{ active: selectedCategory === null }" @click="selectedCategory = null">All</button>
+      <button
+        v-for="cat in categories"
+        :key="cat"
+        :class="{ active: selectedCategory === cat }"
+        @click="selectedCategory = cat"
+      >
+        {{ cat }}
+      </button>
+    </div>
+
+    <div class="product-grid">
+      <div v-for="p in filtered" :key="p.productId" class="product-card">
+        <h3>{{ p.name }}</h3>
+        <p>{{ p.price }} - موجودی {{ p.quantity }}</p>
+        <div class="qty">
+          <button @click="dec(p)">-</button>
+          <span>{{ counts[p.productId] || 1 }}</span>
+          <button @click="inc(p)">+</button>
+        </div>
         <button @click="add(p)">Add</button>
       </div>
     </div>
-    <router-link to="/basket">Go to basket</router-link>
+
+    <button @click="goBasket">Go to basket</button>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { getProducts } from '../services/product';
 
 const products = ref([]);
 const counts = ref({});
+const selectedCategory = ref(null);
+const router = useRouter();
 
 onMounted(async () => {
   const { data } = await getProducts();
   products.value = data;
 });
 
-const grouped = computed(() => {
-  const g = {};
-  for (const p of products.value) {
-    if (!g[p.category]) g[p.category] = [];
-    g[p.category].push(p);
-  }
-  return g;
+const categories = computed(() => {
+  const set = new Set();
+  for (const p of products.value) set.add(p.category);
+  return Array.from(set);
+});
+
+const filtered = computed(() => {
+  if (!selectedCategory.value) return products.value;
+  return products.value.filter(p => p.category === selectedCategory.value);
 });
 
 function add(p) {
@@ -42,5 +64,19 @@ function add(p) {
   else cart.push({ productId: p.productId, name: p.name, unitPrice: p.price, count });
   localStorage.setItem('cart', JSON.stringify(cart));
   counts.value[p.productId] = 1;
+}
+
+function inc(p) {
+  const c = counts.value[p.productId] || 1;
+  if (c < p.quantity) counts.value[p.productId] = c + 1;
+}
+
+function dec(p) {
+  const c = counts.value[p.productId] || 1;
+  if (c > 1) counts.value[p.productId] = c - 1;
+}
+
+function goBasket() {
+  router.push('/basket');
 }
 </script>
