@@ -8,7 +8,7 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/rentshot';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/rentshot';
 
 const products = [
   { name: 'اف ایکس ۳', price: 1200000, quantity: 4, category: 'دوربین' },
@@ -65,4 +65,4 @@ async function seed() {
   process.exit(0);
 }
 
-seed();
+module.exports = seed;

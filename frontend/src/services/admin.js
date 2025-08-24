@@ -5,6 +5,18 @@ function auth() {
   return { headers: { Authorization: `Bearer ${token}` } };
 }
 
+// Debug function to test API connectivity
+export async function testConnection() {
+  try {
+    const response = await api.get('/');
+    console.log('API connection test successful:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('API connection test failed:', error);
+    throw error;
+  }
+}
+
 // pending users
 export function getPendingUsers() {
   return api.get('/admin/pending-users', auth());

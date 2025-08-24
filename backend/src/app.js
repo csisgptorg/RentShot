@@ -8,6 +8,7 @@ const productRoutes = require('./routes/products');
 const reservationRoutes = require('./routes/reservations');
 const messageRoutes = require('./routes/messages');
 const adminRoutes = require('./routes/admin');
+const { startReminderScheduler } = require('./utils/reminderScheduler');
 
 dotenv.config();
 
@@ -26,10 +27,14 @@ app.get('/', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/rentshot';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/rentshot';
 
 mongoose.connect(MONGO_URI).then(() => {
-  app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+  app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+    // Start the reminder scheduler
+    startReminderScheduler();
+  });
 }).catch(err => {
   console.error('Mongo connection error', err);
 });

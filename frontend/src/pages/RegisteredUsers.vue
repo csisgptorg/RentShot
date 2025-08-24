@@ -1,60 +1,188 @@
 <template>
-  <div class="approved-users">
-    <h2>Registered Users</h2>
-    <table class="user-table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Phone</th>
-          <th>Code</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="u in users" :key="u._id">
-          <td>{{ u.firstName }} {{ u.lastName }}</td>
-          <td>{{ u.phone }}</td>
-          <td>{{ u.myCode }}</td>
-          <td>
-            <button @click="remove(u._id)">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div
+    class="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 p-6"
+  >
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <h1
+          class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4"
+        >
+          ✅ کاربران عضو
+        </h1>
+        <p class="text-xl text-gray-600">
+          مدیریت کاربران تأیید شده و عضو سیستم
+        </p>
+      </div>
+
+      <!-- Users List -->
+      <div
+        class="bg-white/80 backdrop-blur-lg rounded-2xl shadow-lg border border-white/20 overflow-hidden"
+      >
+        <div class="p-6 border-b border-gray-200">
+          <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3">
+            <span class="text-3xl">👥</span>
+            کاربران عضو
+            <span
+              class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium"
+            >
+              {{ users.length }} کاربر
+            </span>
+          </h2>
+        </div>
+
+        <!-- Loading State -->
+        <div v-if="loading" class="flex justify-center items-center py-16">
+          <div class="flex flex-col items-center">
+            <svg
+              class="animate-spin h-12 w-12 text-purple-600 mb-4"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+                fill="none"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <p class="text-lg font-medium text-gray-700">
+              در حال بارگذاری کاربران...
+            </p>
+          </div>
+        </div>
+
+        <!-- Users Table -->
+        <div v-else-if="users.length > 0" class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  class="px-6 py-4 text-right text-sm font-medium text-gray-500"
+                >
+                  نام کامل
+                </th>
+                <th
+                  class="px-6 py-4 text-right text-sm font-medium text-gray-500"
+                >
+                  شماره تلفن
+                </th>
+                <th
+                  class="px-6 py-4 text-right text-sm font-medium text-gray-500"
+                >
+                  کد کاربری
+                </th>
+                <th
+                  class="px-6 py-4 text-center text-sm font-medium text-gray-500"
+                >
+                  عملیات
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr
+                v-for="u in users"
+                :key="u._id"
+                class="hover:bg-gray-50 transition-colors duration-200"
+              >
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold"
+                    >
+                      {{ u.firstName.charAt(0) }}{{ u.lastName.charAt(0) }}
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">
+                        {{ u.firstName }} {{ u.lastName }}
+                      </div>
+                      <div class="text-sm text-gray-500">کاربر فعال</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-900 font-medium">
+                  {{ u.phone }}
+                </td>
+                <td class="px-6 py-4">
+                  <span
+                    class="inline-block bg-blue-100 text-blue-800 px-3 py-2 rounded-lg text-sm font-mono font-bold"
+                  >
+                    {{ u.myCode }}
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex justify-center">
+                    <button
+                      @click="remove(u._id)"
+                      :disabled="processingUsers.has(u._id)"
+                      class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-200 text-sm font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <span
+                        v-if="processingUsers.has(u._id)"
+                        class="animate-spin"
+                        >⏳</span
+                      >
+                      <span v-else>🗑️</span>
+                      حذف
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State -->
+        <div v-else class="text-center py-16">
+          <div class="text-6xl mb-4">👥</div>
+          <h3 class="text-2xl font-bold text-gray-600 mb-2">کاربری ثبت نشده</h3>
+          <p class="text-gray-500">هنوز کاربری عضو نشده است</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { getApprovedUsers, deleteUser } from '../services/admin';
+import { ref, onMounted } from "vue";
+import { getApprovedUsers, deleteUser } from "../services/admin";
 
 const users = ref([]);
+const loading = ref(true);
+const processingUsers = ref(new Set());
 
 async function load() {
-  const { data } = await getApprovedUsers();
-  users.value = data;
+  try {
+    loading.value = true;
+    const { data } = await getApprovedUsers();
+    users.value = data;
+  } catch (error) {
+    console.error("Error loading approved users:", error);
+  } finally {
+    loading.value = false;
+  }
 }
 
 async function remove(id) {
-  await deleteUser(id);
-  load();
+  try {
+    if (confirm("آیا از حذف این کاربر مطمئن هستید؟")) {
+      processingUsers.value.add(id);
+      await deleteUser(id);
+      await load();
+    }
+  } catch (error) {
+    console.error("Error deleting user:", error);
+  } finally {
+    processingUsers.value.delete(id);
+  }
 }
 
 onMounted(load);
 </script>
-
-<style scoped>
-.approved-users {
-  padding: 2rem;
-}
-.user-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-.user-table th,
-.user-table td {
-  border: 1px solid #ccc;
-  padding: 0.5rem;
-  text-align: left;
-}
-</style>

@@ -6,7 +6,10 @@ const productSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   quantity: { type: Number, required: true },
   category: { type: String, required: true },
-  imageUrl: { type: String }
+  imageUrl: { type: String }, // URL for external images
+  imageData: { type: String }, // Base64 encoded image data
+  imageName: { type: String }, // Original filename
+  imageType: { type: String }  // MIME type (image/jpeg, image/png, etc.)
 }, { timestamps: true });
 
 module.exports = mongoose.model('Product', productSchema);

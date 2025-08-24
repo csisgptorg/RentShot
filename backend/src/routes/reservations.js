@@ -45,4 +45,13 @@ router.get('/me', requireUser, async (req, res) => {
   res.json(reservations);
 });
 
+router.get('/me/:trackingCode', requireUser, async (req, res) => {
+  const { trackingCode } = req.params;
+  const reservation = await Reservation.findOne({ user: req.userId, trackingCode });
+  if (!reservation) {
+    return res.status(404).json({ error: 'Reservation not found' });
+  }
+  res.json(reservation);
+});
+
 module.exports = router;
