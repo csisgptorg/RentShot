@@ -1,0 +1,31 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const dotenv = require('dotenv');
+
+const authRoutes = require('./routes/auth');
+const productRoutes = require('./routes/products');
+
+dotenv.config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+app.use('/api', authRoutes);
+app.use('/api/products', productRoutes);
+
+app.get('/', (req, res) => {
+  res.json({ message: 'RentShot API running' });
+});
+
+const PORT = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/rentshot';
+
+mongoose.connect(MONGO_URI).then(() => {
+  app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+}).catch(err => {
+  console.error('Mongo connection error', err);
+});
+
+module.exports = app;
